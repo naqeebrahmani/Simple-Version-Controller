@@ -9,7 +9,7 @@ std::string commands[] = {"init", "add", "help"};
 void init(){
 
     if(system("mkdir nit") == 0){
-        system("touch info");
+        system("touch nit/info");
 
     }
 
@@ -18,16 +18,9 @@ void init(){
 
 
 
-
-
-
-
-
-
-
-
-
-
+void help(){
+    return;
+}
 
 
 
@@ -43,7 +36,16 @@ int main(int totalArgs, char* args[]){
     }
 
 
-    
+    if(totalArgs > 1){
+
+        if(stringArgs[1] == "init"){
+
+            init();
+
+        }
+
+
+    }
 
     
 
