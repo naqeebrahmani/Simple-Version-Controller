@@ -19,7 +19,10 @@ void init(){
 
 
 void help(){
-    return;
+    std::cout << "Commands:\n";
+    for(int i = 0; i < (sizeof(commands)/sizeof(std::string)); i++){
+        std::cout << commands[i] + "\n";
+    }
 }
 
 
@@ -41,6 +44,18 @@ int main(int totalArgs, char* args[]){
         if(stringArgs[1] == "init"){
 
             init();
+
+        }
+
+
+
+
+
+
+
+        else if(stringArgs[1] == "help"){
+
+            help();
 
         }
 
