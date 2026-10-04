@@ -1,7 +1,12 @@
+#include <chrono>
 #include <cstdlib>
+#include <time.h>
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+
+
+#include <string>
 
 std::string commands[] = {"init", "add", "help"};
 
@@ -13,7 +18,11 @@ void init(){
     if(!std::filesystem::exists("nit/info")){
         std::ofstream infoFile("nit/info");
 
+        time_t timeNow = time(nullptr); //time in seconds since 1st jan 1970
 
+        auto clock = std::chrono::system_clock::now();
+
+        infoFile << "\nRepository Initialized on " << std::chrono::system_clock::now();
 
         infoFile.close();
     }
