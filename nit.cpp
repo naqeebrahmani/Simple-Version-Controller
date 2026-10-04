@@ -18,7 +18,9 @@ void init(){
     if(!std::filesystem::exists("nit/info")){
         std::ofstream infoFile("nit/info");
 
-        time_t timeNow = time(nullptr); //time in seconds since 1st jan 1970
+        //time_t timeNow = time(nullptr); //time in seconds since 1st jan 1970
+        //i didnt use ctime because autocorrect was showing it as deprecated
+        // After some research,I found out that chrono is the newer (c++ 20+ if i remember correct) thing for time related stuff
 
         auto clock = std::chrono::system_clock::now();
 
