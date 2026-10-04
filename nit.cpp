@@ -8,10 +8,17 @@ std::string commands[] = {"init", "add", "help"};
 
 void init(){
 
-    if(system("mkdir nit") == 0){
-        system("touch nit/info");
+    std::filesystem::create_directory("nit");
 
+    if(!std::filesystem::exists("nit/info")){
+        std::ofstream infoFile("nit/info");
+
+
+
+        infoFile.close();
     }
+
+    
 
 }
 
