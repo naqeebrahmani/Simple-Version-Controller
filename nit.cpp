@@ -4,9 +4,12 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
-
-
 #include <string>
+
+extern "C"{
+    #include "external-libraries/zlib-1.3.2/zlib.h"
+}
+
 
 std::string commands[] = {"init", "add", "help"};
 
@@ -36,6 +39,7 @@ void init(){
 
 
 
+
 void help(){
     std::cout << "Commands:\n";
     for(int i = 0; i < (sizeof(commands)/sizeof(std::string)); i++){
@@ -48,6 +52,7 @@ void help(){
 
 
 int main(int totalArgs, char* args[]){
+
 
     std::string *stringArgs = NULL;
     stringArgs = new std::string[totalArgs];
