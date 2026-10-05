@@ -38,6 +38,14 @@ void init(){
 }
 
 
+void addAndCommit(){
+    return;
+}
+
+
+void log(){
+    return;
+}
 
 
 
@@ -83,7 +91,14 @@ int main(int totalArgs, char* args[]){
 
         }
 
+        else{
+            std::cout << "Invalid Command. Type \"nit help\" to see all available commands.";
+        }
 
+
+    }
+    else{
+        std::cout << "Not enough argumnets. Type \"nit help\" to see all available commands.";
     }
 
     
