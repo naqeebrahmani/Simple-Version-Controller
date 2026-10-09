@@ -39,7 +39,11 @@ void init(){
 
 
 void addAndCommit(){
-    return;
+    std::cout << "description (whole directory): ";
+    std::string commitMessage;
+    std::cin >> commitMessage;
+
+    
 }
 
 
@@ -79,7 +83,11 @@ int main(int totalArgs, char* args[]){
 
         }
 
+        else if(stringArgs[1] == "add"){
 
+            addAndCommit();
+
+        }
 
 
 
