@@ -1,4 +1,5 @@
 #include <chrono>
+#include <cstdio>
 #include <cstdlib>
 #include <time.h>
 #include <iostream>
@@ -39,10 +40,36 @@ void init(){
 
 
 void addAndCommit(){
-    std::cout << "description (whole directory): ";
-    std::string commitMessage;
-    std::cin >> commitMessage;
+    if(std::filesystem::exists("nit/log")){
+        std::cout << "description (for whole directory): ";
+        std::string commitMessage;
+        std::cin >> commitMessage;
 
+
+        for (const auto &file: std::filesystem::directory_iterator(".")) {
+
+
+            return;
+
+
+        }
+
+
+
+
+        std::chrono::zoned_time timeZone{"CET", std::chrono::system_clock::now()};
+        std::string commitTime = std::format("{:%y-%m-%d %H:%M}", timeZone) + "\n";
+
+        std::string commitMessageWithTime = commitTime + commitMessage;
+        
+        
+
+    }
+    else{
+
+        std::cout << "You need to initialize before adding and commiting.";
+
+    }
     
 }
 
