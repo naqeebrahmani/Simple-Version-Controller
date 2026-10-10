@@ -14,7 +14,7 @@ extern "C"{
 }
 
 
-std::string commands[] = {"init", "add", "help"};
+std::string commands[] = {"init", "add", "log", "help"};
 
 void changeTotalCommitsAndRewriteLogFile(){
 
@@ -123,8 +123,22 @@ void addAndCommit(){
 }
 
 
-void log(){
-    return;
+void showLog(){
+    if(std::filesystem::exists("nit/log")){
+
+        std::fstream logFile("nit/log");
+
+        //display each row//
+        
+
+
+    }
+    else{
+
+        std::cout << "The log file doesn't seem to be where it's supposed to. Please try initializing first.";
+
+    }
+    
 }
 
 
@@ -165,9 +179,11 @@ int main(int totalArgs, char* args[]){
 
         }
 
+        else if(stringArgs[1] == "log"){
 
+            showLog();
 
-
+        }
 
         else if(stringArgs[1] == "help"){
 
