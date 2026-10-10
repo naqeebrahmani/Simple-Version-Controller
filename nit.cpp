@@ -38,7 +38,7 @@ void init(){
         std::chrono::zoned_time timeZone{"CET", std::chrono::system_clock::now()};
         std::string timeString = std::format("{:%Y-%m-%d %H:%M}", timeZone);
 
-        infoFile << "0\nRepository Initialized on " << timeString;
+        infoFile << "0\nRepository Initialized on " + timeString + "\n";
 
         infoFile.close();
     }
@@ -51,7 +51,9 @@ void addAndCommit(){
     if(std::filesystem::exists("nit/log")){
         std::cout << "description (for whole directory): ";
         std::string commitMessage;
-        std::cin >> commitMessage;
+
+        std::getline(std::cin >> std:: ws, commitMessage);
+        //std::cin >> commitMessage;
 
         std::fstream infoFile("nit/log");
 
@@ -62,7 +64,6 @@ void addAndCommit(){
         
         try{
             totalCommits = std::stoi(totalCommitsString);
-            std::cout << totalCommits;
         }
         catch(std::exception exception){
             std::cout << "Something seems to be wrong with the log file. Please try deleting the \"nit\" directory and initializing again.";
@@ -74,7 +75,7 @@ void addAndCommit(){
         for (const auto &file: std::filesystem::directory_iterator(".")) {
 
 
-            return;
+            
 
 
         }
@@ -82,12 +83,31 @@ void addAndCommit(){
 
 
 
+
+
         std::chrono::zoned_time timeZone{"CET", std::chrono::system_clock::now()};
         std::string commitTime = std::format("{:%y-%m-%d %H:%M}", timeZone) + "\n";
 
-        std::string commitMessageWithTime = commitTime + commitMessage;
-        
-        
+        std::string commitMessageWithTimeAndCommitNumber = "(" + std::to_string(totalCommits + 1) + ")" + commitTime + commitMessage + "\n";
+
+        //for testing
+        std::cout << commitMessageWithTimeAndCommitNumber;
+        //////////////////////////////////////////////////
+
+        //adding the newest add/commit to the log file
+
+        std::ofstream CreatedTempInfoFile("nit/logTemp");
+        CreatedTempInfoFile.close();
+
+        std::fstream infoFileTemp("nit/logTemp");
+        infoFileTemp << totalCommits + 1 << "\n";
+        infoFileTemp << infoFile.rdbuf() << commitMessageWithTimeAndCommitNumber;
+    
+        infoFile.close();
+        std::remove("nit/log");
+        infoFileTemp.close();
+        std::rename("nit/logTemp", "nit/log");
+        ////////////////////////////////////////////////////////////////////
 
     }
     else{
