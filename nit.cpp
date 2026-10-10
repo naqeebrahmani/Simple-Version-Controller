@@ -26,6 +26,8 @@ void changeTotalCommitsAndRewriteLogFile(){
 void init(){
 
     std::filesystem::create_directory("nit");
+    std::filesystem::create_directory("nit/saves");
+
 
     if(!std::filesystem::exists("nit/log")){
         std::ofstream infoFile("nit/log");
@@ -59,6 +61,7 @@ void addAndCommit(){
 
         std::string totalCommitsString;
         std::getline(infoFile, totalCommitsString);
+
         //converting the string with totalcommitnumbers to an integer
         int totalCommits = -1;
 
@@ -70,17 +73,18 @@ void addAndCommit(){
             exit(0);
         }
         
-        
+        //creating a new directory for the latest save
+        std::string saveDirectoryPath = "nit/saves/" + std::to_string(totalCommits + 1);
+        std::filesystem::create_directory(saveDirectoryPath);
+        ///////////////////////////////////////////////////////////////////////////////////
 
         for (const auto &file: std::filesystem::directory_iterator(".")) {
 
-
             
-
 
         }
 
-
+        
 
 
 
