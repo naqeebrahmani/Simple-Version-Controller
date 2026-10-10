@@ -1,6 +1,6 @@
 #include <fstream>
 #include <iostream>
-#include "external-libraries/zlib-1.3.2/zlib.h"
+#include "zlib.h"
 
 
 

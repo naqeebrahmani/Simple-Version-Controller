@@ -10,7 +10,7 @@
 #include <string>
 
 extern "C"{
-    #include "external-libraries/zlib-1.3.2/zlib.h"
+    #include "zlib.h"
 }
 
 
@@ -61,7 +61,7 @@ void addAndCommit(){
         std::getline(infoFile, totalCommitsString);
         //converting the string with totalcommitnumbers to an integer
         int totalCommits = -1;
-        
+
         try{
             totalCommits = std::stoi(totalCommitsString);
         }
