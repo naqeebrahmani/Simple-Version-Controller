@@ -1,6 +1,8 @@
 #include <chrono>
+#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
+#include <exception>
 #include <time.h>
 #include <iostream>
 #include <filesystem>
@@ -13,6 +15,12 @@ extern "C"{
 
 
 std::string commands[] = {"init", "add", "help"};
+
+void changeTotalCommitsAndRewriteLogFile(){
+
+    
+
+}
 
 
 void init(){
@@ -30,7 +38,7 @@ void init(){
         std::chrono::zoned_time timeZone{"CET", std::chrono::system_clock::now()};
         std::string timeString = std::format("{:%Y-%m-%d %H:%M}", timeZone);
 
-        infoFile << "Repository Initialized on " << timeString;
+        infoFile << "0\nRepository Initialized on " << timeString;
 
         infoFile.close();
     }
@@ -45,6 +53,23 @@ void addAndCommit(){
         std::string commitMessage;
         std::cin >> commitMessage;
 
+        std::fstream infoFile("nit/log");
+
+        std::string totalCommitsString;
+        std::getline(infoFile, totalCommitsString);
+        //converting the string with totalcommitnumbers to an integer
+        int totalCommits = -1;
+        
+        try{
+            totalCommits = std::stoi(totalCommitsString);
+            std::cout << totalCommits;
+        }
+        catch(std::exception exception){
+            std::cout << "Something seems to be wrong with the log file. Please try deleting the \"nit\" directory and initializing again.";
+            exit(0);
+        }
+        
+        
 
         for (const auto &file: std::filesystem::directory_iterator(".")) {
 
