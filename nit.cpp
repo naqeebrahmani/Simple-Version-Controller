@@ -128,8 +128,17 @@ void showLog(){
 
         std::fstream logFile("nit/log");
 
-        //display each row//
-        
+        std::cout << std::endl;
+
+        std::string row = "";
+        do{
+            if(row.size() == 0){
+                std::cout << "Total Saves: ";
+            }
+            std::getline(logFile, row);
+            std::cout << row;
+            std::cout << std::endl;
+        }while(row.size() > 0);
 
 
     }
