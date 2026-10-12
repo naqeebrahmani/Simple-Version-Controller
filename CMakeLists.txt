@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.23)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 project(nit)
 
 add_executable(nit)
@@ -12,7 +14,7 @@ target_sources(nit
 
 add_library(zlib IMPORTED STATIC)
 
-include_directories(zlib
+include_directories(
     "C:/zlib-1.3.2")
 
 
