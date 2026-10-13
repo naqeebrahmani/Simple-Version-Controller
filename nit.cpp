@@ -25,12 +25,12 @@ void changeTotalCommitsAndRewriteLogFile(){
 
 void init(){
 
-    std::filesystem::create_directory("nit");
-    std::filesystem::create_directory("nit/saves");
+    std::filesystem::create_directory(".nit");
+    std::filesystem::create_directory(".nit/saves");
 
 
-    if(!std::filesystem::exists("nit/log")){
-        std::ofstream infoFile("nit/log");
+    if(!std::filesystem::exists(".nit/log")){
+        std::ofstream infoFile(".nit/log");
 
         //time_t timeNow = time(nullptr); //time in seconds since 1st jan 1970
         //i didnt use ctime because autocorrect was showing it as deprecated
@@ -49,15 +49,34 @@ void init(){
 }
 
 
+void copyDirectory(){
+
+    std::cout << "starting iterating\n"; //for debugging
+
+    for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(".")){
+
+        std::cout << dirEntry.path().filename() <<std::endl;
+
+        if(dirEntry.is_directory()){ //continue..
+            copyDirectory();
+        }
+
+    }
+
+    std::cout << "iterated!\n"; //for debugging
+
+}
+
+
 void addAndCommit(){
-    if(std::filesystem::exists("nit/log")){
+    if(std::filesystem::exists(".nit/log")){
         std::cout << "description (for whole directory): ";
         std::string commitMessage;
 
         std::getline(std::cin >> std:: ws, commitMessage);
         //std::cin >> commitMessage;
 
-        std::fstream infoFile("nit/log");
+        std::fstream infoFile(".nit/log");
 
         std::string totalCommitsString;
         std::getline(infoFile, totalCommitsString);
@@ -69,21 +88,20 @@ void addAndCommit(){
             totalCommits = std::stoi(totalCommitsString);
         }
         catch(std::exception exception){
-            std::cout << "Something seems to be wrong with the log file. Please try deleting the \"nit\" directory and initializing again.";
+            std::cout << "Something seems to be wrong with the log file. Please try deleting the \".nit\" directory and initializing again.";
             exit(0);
         }
         
         //creating a new directory for the latest save
-        std::string saveDirectoryPath = "nit/saves/" + std::to_string(totalCommits + 1);
+        std::string saveDirectoryPath = ".nit/saves/" + std::to_string(totalCommits + 1);
         std::filesystem::create_directory(saveDirectoryPath);
         ///////////////////////////////////////////////////////////////////////////////////
 
-        for (const auto &file: std::filesystem::directory_iterator(".")) {
+        //copying the directory
 
-            
+        copyDirectory();
 
-        }
-
+        /////////////////////////
         
 
 
@@ -94,23 +112,20 @@ void addAndCommit(){
 
         std::string commitMessageWithTimeAndCommitNumber = "(" + std::to_string(totalCommits + 1) + ")" + commitTime + commitMessage + "\n";
 
-        //for testing
-        std::cout << commitMessageWithTimeAndCommitNumber;
-        //////////////////////////////////////////////////
 
         //adding the newest add/commit to the log file
 
-        std::ofstream CreatedTempInfoFile("nit/logTemp");
+        std::ofstream CreatedTempInfoFile(".nit/logTemp");
         CreatedTempInfoFile.close();
 
-        std::fstream infoFileTemp("nit/logTemp");
+        std::fstream infoFileTemp(".nit/logTemp");
         infoFileTemp << totalCommits + 1 << "\n";
         infoFileTemp << infoFile.rdbuf() << commitMessageWithTimeAndCommitNumber;
     
         infoFile.close();
-        std::remove("nit/log");
+        std::remove(".nit/log");
         infoFileTemp.close();
-        std::rename("nit/logTemp", "nit/log");
+        std::rename(".nit/logTemp", ".nit/log");
         ////////////////////////////////////////////////////////////////////
 
     }
@@ -123,10 +138,12 @@ void addAndCommit(){
 }
 
 
-void showLog(){
-    if(std::filesystem::exists("nit/log")){
 
-        std::fstream logFile("nit/log");
+
+void showLog(){
+    if(std::filesystem::exists(".nit/log")){
+
+        std::fstream logFile(".nit/log");
 
         std::cout << std::endl;
 
