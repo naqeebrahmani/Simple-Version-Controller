@@ -49,16 +49,18 @@ void init(){
 }
 
 
-void copyDirectory(){
+void copyDirectory(std::string srcPath, std::string destPath){
+
 
     std::cout << "starting iterating\n"; //for debugging
 
-    for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(".")){
+    for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(srcPath)){
 
         std::cout << dirEntry.path().filename() <<std::endl;
 
-        if(dirEntry.is_directory()){ //continue..
-            copyDirectory();
+        if(dirEntry.is_directory()){ 
+            std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
+            copyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
         }
 
     }
@@ -99,7 +101,7 @@ void addAndCommit(){
 
         //copying the directory
 
-        copyDirectory();
+        copyDirectory(".", ".nit/saves/"+std::to_string(totalCommits+1));
 
         /////////////////////////
         
