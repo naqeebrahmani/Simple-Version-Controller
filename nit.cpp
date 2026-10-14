@@ -51,21 +51,30 @@ void init(){
 
 void copyDirectory(std::string srcPath, std::string destPath){
 
+    try{
 
-    std::cout << "starting iterating\n"; //for debugging
+            std::cout << "starting iterating\n"; //for debugging
 
-    for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(srcPath)){
+        for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(srcPath)){
 
-        std::cout << dirEntry.path().filename() <<std::endl;
+            std::cout << dirEntry.path().filename() <<std::endl;
 
-        if(dirEntry.is_directory()){ 
-            std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
-            copyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
+            if(dirEntry.is_directory()){ 
+                std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
+                copyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
+            }
+
         }
 
+        std::cout << "iterated!\n"; //for debugging
+
+    }
+    catch(std::exception e){
+        std::cout << "Error when trying to iterate through working directory.";
+        std::cout << e.what();
     }
 
-    std::cout << "iterated!\n"; //for debugging
+
 
 }
 
@@ -121,7 +130,7 @@ void addAndCommit(){
         CreatedTempInfoFile.close();
 
         std::fstream infoFileTemp(".nit/logTemp");
-        infoFileTemp << totalCommits + 1 << "\n";
+        infoFileTemp << totalCommits + 1 << "\n"; std::cout << "added to totalcommits!" <<std::endl;
         infoFileTemp << infoFile.rdbuf() << commitMessageWithTimeAndCommitNumber;
     
         infoFile.close();
