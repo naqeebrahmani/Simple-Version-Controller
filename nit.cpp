@@ -51,20 +51,27 @@ void init(){
 
 void copyDirectory(std::string srcPath, std::string destPath){
 
-        std::cout << "starting iterating\n"; //for debugging
+    //std::cout << "starting iterating\n"; //for debugging
 
     for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(srcPath)){
 
         std::cout << dirEntry.path().filename() <<std::endl;
 
+
         if(dirEntry.is_directory() && dirEntry.path().filename().string() != ".nit"){ 
             std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
             copyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
         }
+        else{
+
+            std::filesystem::copy(dirEntry.path(), destPath);
+
+        }
+
 
     }
 
-    std::cout << "iterated!\n"; //for debugging
+    //std::cout << "iterated!\n"; //for debugging
 
 
 
