@@ -59,7 +59,7 @@ void copyDirectory(std::string srcPath, std::string destPath){
 
             std::cout << dirEntry.path().filename() <<std::endl;
 
-            if(dirEntry.is_directory()){ 
+            if(dirEntry.is_directory() && dirEntry.path().filename().string() != ".nit"){ 
                 std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
                 copyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
             }
