@@ -14,7 +14,7 @@ extern "C"{
 }
 
 
-std::string commands[] = {"init", "add", "log", "help"};
+std::string commands[] = {"init", "add", "preview saveNumber (example: nit preview 6)", "log", "help"};
 
 void changeTotalCommitsAndRewriteLogFile(){
 
@@ -149,6 +149,36 @@ void addAndCommit(){
 
 
 
+void preview(std::string saveNumber){
+    std::string srcPath = ".nit/saves/"+saveNumber;
+    if(std::filesystem::exists(srcPath)){
+
+        if(std::filesystem::exists(".nit/preview")){
+            std::filesystem::remove_all(".nit/preview");
+        }
+
+        std::filesystem::create_directory(".nit/preview");
+        std::string previewDirPath = ".nit/preview/"+saveNumber;
+        std::filesystem::create_directory(previewDirPath);
+
+
+
+
+
+
+    }
+    else{
+
+        std::cout << "Unable to find a save with that number.";
+
+    }
+
+    
+
+}
+
+
+
 
 void showLog(){
     if(std::filesystem::exists(".nit/log")){
@@ -212,6 +242,17 @@ int main(int totalArgs, char* args[]){
         else if(stringArgs[1] == "add"){
 
             addAndCommit();
+
+        }
+
+        else if(stringArgs[1] == "preview"){
+
+            if(totalArgs < 3){
+                std::cout << "few arguments. You also need to specify which save you want to preview by typing \"preview savenumber\".";
+                return 0;
+            }
+            
+            preview(stringArgs[2]);
 
         }
 
