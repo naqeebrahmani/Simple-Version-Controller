@@ -1,3 +1,4 @@
+#include "zconf.h"
 #include <chrono>
 #include <cstddef>
 #include <cstdio>
@@ -49,7 +50,7 @@ void init(){
 }
 
 
-void copyDirectory(std::string srcPath, std::string destPath){
+void compressAndCopyDirectory(std::string srcPath, std::string destPath){
 
     //std::cout << "starting iterating\n"; //for debugging
 
@@ -60,11 +61,39 @@ void copyDirectory(std::string srcPath, std::string destPath){
 
         if(dirEntry.is_directory() && dirEntry.path().filename().string() != ".nit"){ 
             std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
-            copyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
+            compressAndCopyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
         }
         else{
 
+
+
             std::filesystem::copy(dirEntry.path(), destPath);
+
+            std::ifstream srcFile(dirEntry.path(), std::ifstream::binary);
+
+            int srcFileBytes = std::filesystem::file_size(dirEntry.path());
+            unsigned char* srcFileBuffer = new unsigned char[srcFileBytes];
+
+            srcFile.read(reinterpret_cast<char*>(srcFileBuffer), srcFileBytes);
+            srcFile.close();
+
+
+            uLong destFileBytes = compressBound(srcFileBytes);
+            unsigned char* destFileBuffer = new unsigned char[destFileBytes];
+            
+            if(compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) < 0){
+                std::cout << "Error when trying to compress your files.\n";
+                exit(0);
+            }
+
+            std::ofstream destFile(destPath + "/" + dirEntry.path().filename().string(), std::ofstream::binary);
+            destFile.write(reinterpret_cast<char*>(destFileBuffer), destFileBytes);
+
+
+
+            delete[] srcFileBuffer;
+            delete[] destFileBuffer;
+
 
         }
 
@@ -109,7 +138,7 @@ void addAndCommit(){
 
         //copying the directory
 
-        copyDirectory(".", ".nit/saves/"+std::to_string(totalCommits+1));
+        compressAndCopyDirectory(".", ".nit/saves/"+std::to_string(totalCommits+1));
 
         /////////////////////////
         
