@@ -15,7 +15,7 @@ extern "C"{
 }
 
 
-std::string commands[] = {"init", "add", "preview saveNumber (example: nit preview 6)", "log", "help"};
+std::string commands[] = {"Init", "add", "Preview saveNumber (example: nit Preview 6)", "log", "Help"};
 
 void changeTotalCommitsAndRewriteLogFile(){
 
@@ -24,7 +24,7 @@ void changeTotalCommitsAndRewriteLogFile(){
 }
 
 
-void init(){
+void Init(){
 
     std::filesystem::create_directory(".nit");
     std::filesystem::create_directory(".nit/saves");
@@ -50,24 +50,23 @@ void init(){
 }
 
 
-void compressAndCopyDirectory(std::string srcPath, std::string destPath){
+void CompressAndCopyDirectory(std::string srcPath, std::string destPath){
 
     //std::cout << "starting iterating\n"; //for debugging
 
     for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(srcPath)){
 
-        std::cout << dirEntry.path().filename() <<std::endl;
 
 
         if(dirEntry.is_directory() && dirEntry.path().filename().string() != ".nit"){ 
             std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
-            compressAndCopyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
+            CompressAndCopyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
         }
-        else{
+        else if(dirEntry.path().filename().string() != ".nit"){
 
 
 
-            std::filesystem::copy(dirEntry.path(), destPath);
+            //std::filesystem::copy(dirEntry.path(), destPath);
 
             std::ifstream srcFile(dirEntry.path(), std::ifstream::binary);
 
@@ -81,10 +80,12 @@ void compressAndCopyDirectory(std::string srcPath, std::string destPath){
             uLong destFileBytes = compressBound(srcFileBytes);
             unsigned char* destFileBuffer = new unsigned char[destFileBytes];
             
-            if(compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) < 0){
+            /*if(compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) < 0){
                 std::cout << "Error when trying to compress your files.\n";
                 exit(0);
-            }
+            }*/
+
+            compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes);
 
             std::ofstream destFile(destPath + "/" + dirEntry.path().filename().string(), std::ofstream::binary);
             destFile.write(reinterpret_cast<char*>(destFileBuffer), destFileBytes);
@@ -102,12 +103,15 @@ void compressAndCopyDirectory(std::string srcPath, std::string destPath){
 
     //std::cout << "iterated!\n"; //for debugging
 
+}
 
+
+void UnCompressAndCopyDirectory(){
 
 }
 
 
-void addAndCommit(){
+void AddAndCommit(){
     if(std::filesystem::exists(".nit/log")){
         std::cout << "description (for whole directory): ";
         std::string commitMessage;
@@ -127,7 +131,7 @@ void addAndCommit(){
             totalCommits = std::stoi(totalCommitsString);
         }
         catch(std::exception exception){
-            std::cout << "Something seems to be wrong with the log file. Please try deleting the \".nit\" directory and initializing again.";
+            std::cout << "Something seems to be wrong with the log file. Please try deleting the \".nit\" directory and Initializing again.";
             exit(0);
         }
         
@@ -138,7 +142,7 @@ void addAndCommit(){
 
         //copying the directory
 
-        compressAndCopyDirectory(".", ".nit/saves/"+std::to_string(totalCommits+1));
+        CompressAndCopyDirectory(".", ".nit/saves/"+std::to_string(totalCommits+1));
 
         /////////////////////////
         
@@ -170,7 +174,7 @@ void addAndCommit(){
     }
     else{
 
-        std::cout << "You need to initialize before adding and commiting.";
+        std::cout << "You need to Initialize before adding and commiting.";
 
     }
     
@@ -178,17 +182,17 @@ void addAndCommit(){
 
 
 
-void preview(std::string saveNumber){
+void Preview(std::string saveNumber){
     std::string srcPath = ".nit/saves/"+saveNumber;
     if(std::filesystem::exists(srcPath)){
 
-        if(std::filesystem::exists(".nit/preview")){
-            std::filesystem::remove_all(".nit/preview");
+        if(std::filesystem::exists(".nit/Preview")){
+            std::filesystem::remove_all(".nit/Preview");
         }
 
-        std::filesystem::create_directory(".nit/preview");
-        std::string previewDirPath = ".nit/preview/"+saveNumber;
-        std::filesystem::create_directory(previewDirPath);
+        std::filesystem::create_directory(".nit/Preview");
+        std::string PreviewDirPath = ".nit/Preview/"+saveNumber;
+        std::filesystem::create_directory(PreviewDirPath);
 
 
 
@@ -209,7 +213,7 @@ void preview(std::string saveNumber){
 
 
 
-void showLog(){
+void ShowLog(){
     if(std::filesystem::exists(".nit/log")){
 
         std::fstream logFile(".nit/log");
@@ -230,7 +234,7 @@ void showLog(){
     }
     else{
 
-        std::cout << "The log file doesn't seem to be where it's supposed to. Please try initializing first.";
+        std::cout << "The log file doesn't seem to be where it's supposed to. Please try Initializing first.";
 
     }
     
@@ -238,7 +242,7 @@ void showLog(){
 
 
 
-void help(){
+void Help(){
     std::cout << "Commands:\n";
     for(int i = 0; i < (sizeof(commands)/sizeof(std::string)); i++){
         std::cout << commands[i] + "\n";
@@ -262,49 +266,49 @@ int main(int totalArgs, char* args[]){
 
     if(totalArgs > 1){
 
-        if(stringArgs[1] == "init"){
+        if(stringArgs[1] == "Init"){
 
-            init();
+            Init();
 
         }
 
         else if(stringArgs[1] == "add"){
 
-            addAndCommit();
+            AddAndCommit();
 
         }
 
-        else if(stringArgs[1] == "preview"){
+        else if(stringArgs[1] == "Preview"){
 
             if(totalArgs < 3){
-                std::cout << "few arguments. You also need to specify which save you want to preview by typing \"preview savenumber\".";
+                std::cout << "few arguments. You also need to specify which save you want to Preview by typing \"Preview savenumber\".";
                 return 0;
             }
             
-            preview(stringArgs[2]);
+            Preview(stringArgs[2]);
 
         }
 
         else if(stringArgs[1] == "log"){
 
-            showLog();
+            ShowLog();
 
         }
 
-        else if(stringArgs[1] == "help"){
+        else if(stringArgs[1] == "Help"){
 
-            help();
+            Help();
 
         }
 
         else{
-            std::cout << "Invalid Command. Type \"nit help\" to see all available commands.";
+            std::cout << "Invalid Command. Type \"nit Help\" to see all available commands.";
         }
 
 
     }
     else{
-        std::cout << "Not enough argumnets. Type \"nit help\" to see all available commands.";
+        std::cout << "Not enough argumnets. Type \"nit Help\" to see all available commands.";
     }
 
     
