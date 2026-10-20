@@ -72,7 +72,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\raylib\w64devkit\bin\cmake.exe --regenerate-during-build -SC:\Users\naqee\Desktop\Simple-Version-Controller -BC:\Users\naqee\Desktop\Simple-Version-Controller\build
+  command = C:\raylib\w64devkit\bin\cmake.exe --regenerate-during-build -SC:\Users\naqeeb.rahmani\Desktop\Simple-Version-Controller -BC:\Users\naqeeb.rahmani\Desktop\Simple-Version-Controller\build
   description = Re-running CMake...
   generator = 1
 

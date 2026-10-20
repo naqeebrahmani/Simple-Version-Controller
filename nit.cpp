@@ -15,13 +15,8 @@ extern "C"{
 }
 
 
-std::string commands[] = {"Init", "add", "Preview saveNumber (example: nit Preview 6)", "log", "Help"};
+std::string commands[] = {"init", "add", "Preview saveNumber (example: nit Preview 6)", "log", "Help"};
 
-void changeTotalCommitsAndRewriteLogFile(){
-
-    
-
-}
 
 
 void Init(){
@@ -106,9 +101,53 @@ void CompressAndCopyDirectory(std::string srcPath, std::string destPath){
 }
 
 
-void UnCompressAndCopyDirectory(){
+void UnCompressAndCopyDirectory(std::string srcPath, std::string destPath){
+
+    for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(srcPath)){
+
+
+        if(dirEntry.is_directory() && dirEntry.path().filename().string() != ".nit"){ 
+            std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
+            UnCompressAndCopyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
+        }
+        else{
+
+            //std::filesystem::copy(dirEntry.path(), destPath);
+
+            std::ifstream srcFile(dirEntry.path(), std::ifstream::binary);
+
+            int srcFileBytes = std::filesystem::file_size(dirEntry.path());
+            unsigned char* srcFileBuffer = new unsigned char[srcFileBytes];
+
+            srcFile.read(reinterpret_cast<char*>(srcFileBuffer), srcFileBytes);
+            srcFile.close();
+
+
+            uLong destFileBytes = srcFileBytes * 1.5;
+            unsigned char* destFileBuffer = new unsigned char[destFileBytes];
+            
+            
+            uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes);
+
+            std::ofstream destFile(destPath + "/" + dirEntry.path().filename().string(), std::ofstream::binary);
+            destFile.write(reinterpret_cast<char*>(destFileBuffer), destFileBytes);
+
+
+
+            delete[] srcFileBuffer;
+            delete[] destFileBuffer;
+
+
+        }
+
+
+    }
+
+    //std::cout << "iterated!\n"; //for debugging
 
 }
+
+
 
 
 void AddAndCommit(){
@@ -266,7 +305,7 @@ int main(int totalArgs, char* args[]){
 
     if(totalArgs > 1){
 
-        if(stringArgs[1] == "Init"){
+        if(stringArgs[1] == "init"){
 
             Init();
 
@@ -278,7 +317,7 @@ int main(int totalArgs, char* args[]){
 
         }
 
-        else if(stringArgs[1] == "Preview"){
+        else if(stringArgs[1] == "preview"){
 
             if(totalArgs < 3){
                 std::cout << "few arguments. You also need to specify which save you want to Preview by typing \"Preview savenumber\".";
@@ -295,7 +334,7 @@ int main(int totalArgs, char* args[]){
 
         }
 
-        else if(stringArgs[1] == "Help"){
+        else if(stringArgs[1] == "help"){
 
             Help();
 
