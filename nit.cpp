@@ -13,7 +13,7 @@ extern "C"{
 }
 
 
-std::string commands[] = {"init", "add", "preview saveNumber (example: nit Preview 6)", "log", "help"};
+std::string commands[] = {"init", "add", "replace x (x is the save number)", "preview x (x is the save number)", "log", "help"};
 
 
 
@@ -119,12 +119,28 @@ void UnCompressAndCopyDirectory(std::string srcPath, std::string destPath){
             uLong destFileBytes = srcFileBytes * 1.5;
             unsigned char* destFileBuffer = new unsigned char[destFileBytes];
             
-            while(uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) == Z_BUF_ERROR){
-                
-                delete[] destFileBuffer;
+            if(uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) < 0){
 
-                destFileBytes *= 2;
-                destFileBuffer = new unsigned char[destFileBytes];
+                if(uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) == Z_MEM_ERROR){
+                    std::cout << "Not enough memory for uncompressing " << dirEntry.path().filename().string() << "\n";
+                    continue;
+                }
+                else if(uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) == Z_DATA_ERROR){
+                    std::cout << "Could not uncompress " << dirEntry.path().filename().string();
+                }
+                else if(uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) == Z_BUF_ERROR){
+
+                    while(uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) == Z_BUF_ERROR){
+                    
+                        delete[] destFileBuffer;
+
+                        destFileBytes *= 2;
+                        destFileBuffer = new unsigned char[destFileBytes];
+
+                    }
+
+                }
+
 
             }
 
