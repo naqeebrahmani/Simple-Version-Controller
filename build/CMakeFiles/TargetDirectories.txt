@@ -1,3 +1,3 @@
-C:/Users/naqeeb.rahmani/Desktop/Simple-Version-Controller/build/CMakeFiles/nit.dir
-C:/Users/naqeeb.rahmani/Desktop/Simple-Version-Controller/build/CMakeFiles/edit_cache.dir
-C:/Users/naqeeb.rahmani/Desktop/Simple-Version-Controller/build/CMakeFiles/rebuild_cache.dir
+C:/Users/naqee/Desktop/Simple-Version-Controller/build/CMakeFiles/nit.dir
+C:/Users/naqee/Desktop/Simple-Version-Controller/build/CMakeFiles/edit_cache.dir
+C:/Users/naqee/Desktop/Simple-Version-Controller/build/CMakeFiles/rebuild_cache.dir

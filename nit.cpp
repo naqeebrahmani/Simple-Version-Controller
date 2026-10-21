@@ -1,10 +1,8 @@
 #include "zconf.h"
 #include <chrono>
-#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 #include <exception>
-#include <time.h>
 #include <iostream>
 #include <filesystem>
 #include <fstream>
@@ -15,7 +13,7 @@ extern "C"{
 }
 
 
-std::string commands[] = {"init", "add", "Preview saveNumber (example: nit Preview 6)", "log", "Help"};
+std::string commands[] = {"init", "add", "preview saveNumber (example: nit Preview 6)", "log", "help"};
 
 
 
@@ -59,10 +57,6 @@ void CompressAndCopyDirectory(std::string srcPath, std::string destPath){
         }
         else if(dirEntry.path().filename().string() != ".nit"){
 
-
-
-            //std::filesystem::copy(dirEntry.path(), destPath);
-
             std::ifstream srcFile(dirEntry.path(), std::ifstream::binary);
 
             int srcFileBytes = std::filesystem::file_size(dirEntry.path());
@@ -75,17 +69,18 @@ void CompressAndCopyDirectory(std::string srcPath, std::string destPath){
             uLong destFileBytes = compressBound(srcFileBytes);
             unsigned char* destFileBuffer = new unsigned char[destFileBytes];
             
-            /*if(compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) < 0){
+            if(compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) < 0){
                 std::cout << "Error when trying to compress your files.\n";
                 exit(0);
-            }*/
+            }
 
-            compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes);
+            //compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes);
 
             std::ofstream destFile(destPath + "/" + dirEntry.path().filename().string(), std::ofstream::binary);
             destFile.write(reinterpret_cast<char*>(destFileBuffer), destFileBytes);
 
 
+            std::cout << "Compressed and saved: " << dirEntry.path().filename().string() << "\n";
 
             delete[] srcFileBuffer;
             delete[] destFileBuffer;
@@ -107,12 +102,10 @@ void UnCompressAndCopyDirectory(std::string srcPath, std::string destPath){
 
 
         if(dirEntry.is_directory() && dirEntry.path().filename().string() != ".nit"){ 
-            std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
+            std::filesystem::create_directory(destPath + "/" + dirEntry.path().filename().string());
             UnCompressAndCopyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
         }
         else{
-
-            //std::filesystem::copy(dirEntry.path(), destPath);
 
             std::ifstream srcFile(dirEntry.path(), std::ifstream::binary);
 
@@ -126,12 +119,22 @@ void UnCompressAndCopyDirectory(std::string srcPath, std::string destPath){
             uLong destFileBytes = srcFileBytes * 1.5;
             unsigned char* destFileBuffer = new unsigned char[destFileBytes];
             
+            while(uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) == Z_BUF_ERROR){
+                
+                delete[] destFileBuffer;
+
+                destFileBytes *= 2;
+                destFileBuffer = new unsigned char[destFileBytes];
+
+            }
+
             
-            uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes);
 
             std::ofstream destFile(destPath + "/" + dirEntry.path().filename().string(), std::ofstream::binary);
             destFile.write(reinterpret_cast<char*>(destFileBuffer), destFileBytes);
 
+
+            std::cout << "Uncompressed: " << dirEntry.path().filename().string() << "\n";
 
 
             delete[] srcFileBuffer;
@@ -194,21 +197,24 @@ void AddAndCommit(){
 
         std::string commitMessageWithTimeAndCommitNumber = "(" + std::to_string(totalCommits + 1) + ")" + commitTime + commitMessage + "\n";
 
-
         //adding the newest add/commit to the log file
 
         std::ofstream CreatedTempInfoFile(".nit/logTemp");
         CreatedTempInfoFile.close();
 
         std::fstream infoFileTemp(".nit/logTemp");
-        infoFileTemp << totalCommits + 1 << "\n"; std::cout << "added to totalcommits!" <<std::endl;
+        infoFileTemp << totalCommits + 1 << "\n";
         infoFileTemp << infoFile.rdbuf() << commitMessageWithTimeAndCommitNumber;
-    
+
         infoFile.close();
         std::remove(".nit/log");
         infoFileTemp.close();
         std::rename(".nit/logTemp", ".nit/log");
+
+
         ////////////////////////////////////////////////////////////////////
+
+        std::cout << "Save status: Successful" <<std::endl;
 
     }
     else{
@@ -234,8 +240,10 @@ void Preview(std::string saveNumber){
         std::filesystem::create_directory(PreviewDirPath);
 
 
+        UnCompressAndCopyDirectory(srcPath, PreviewDirPath);
 
-
+        std::cout << "Preview directory status: successful\n";
+        std::cout << "Note: The preview directory can be deleted by you anytime, and using the preview command automatically clears the preview directory.\n";
 
 
     }
@@ -295,8 +303,7 @@ void Help(){
 int main(int totalArgs, char* args[]){
 
 
-    std::string *stringArgs = NULL;
-    stringArgs = new std::string[totalArgs];
+    std::string *stringArgs =new std::string[totalArgs];
 
     for(int i = 0; i < totalArgs; i++){
         stringArgs[i] = args[i];
@@ -352,7 +359,7 @@ int main(int totalArgs, char* args[]){
 
     
 
-
+    delete[] stringArgs;
 
     return 0;
 }

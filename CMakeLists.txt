@@ -19,7 +19,7 @@
 
 
     set_property(TARGET zlib PROPERTY
-                IMPORTED_LOCATION "C:/zlib-1.3.2/build/libzs.a")
+                IMPORTED_LOCATION "C:/zlib-1.3.2/libz.a")
 
     target_link_libraries(nit
         PRIVATE
