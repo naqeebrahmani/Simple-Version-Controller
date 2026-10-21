@@ -244,6 +244,9 @@ void AddAndCommit(){
 
 void Replace(std::string srcPath){
 
+    for(std::filesystem::directory_entry dirEntry : std::filesystem::directory_iterator(".")){
+
+    }
 
 
 }
@@ -251,32 +254,38 @@ void Replace(std::string srcPath){
 
 
 void Preview(std::string saveNumber){
-    std::string srcPath = ".nit/saves/"+saveNumber;
-    if(std::filesystem::exists(srcPath)){
 
-        if(std::filesystem::exists(".nit/Preview")){
-            std::filesystem::remove_all(".nit/Preview");
+    if(std::filesystem::exists(".nit")){
+
+
+        std::string srcPath = ".nit/saves/"+saveNumber;
+        if(std::filesystem::exists(srcPath)){
+
+            if(std::filesystem::exists(".nit/Preview")){
+                std::filesystem::remove_all(".nit/Preview");
+            }
+
+            std::filesystem::create_directory(".nit/Preview");
+            std::string PreviewDirPath = ".nit/Preview/"+saveNumber;
+            std::filesystem::create_directory(PreviewDirPath);
+
+
+            UnCompressAndCopyDirectory(srcPath, PreviewDirPath);
+
+            std::cout << "The preview directory is ready.\n";
+            std::cout << "Note: The preview directory can be deleted by you anytime, and using the preview command automatically clears the preview directory.\n";
+
         }
+        else{
 
-        std::filesystem::create_directory(".nit/Preview");
-        std::string PreviewDirPath = ".nit/Preview/"+saveNumber;
-        std::filesystem::create_directory(PreviewDirPath);
+            std::cout << "Unable to find a save with that number.";
 
-
-        UnCompressAndCopyDirectory(srcPath, PreviewDirPath);
-
-        std::cout << "The preview directory is ready.\n";
-        std::cout << "Note: The preview directory can be deleted by you anytime, and using the preview command automatically clears the preview directory.\n";
-
+        }
 
     }
     else{
-
-        std::cout << "Unable to find a save with that number.";
-
+        std::cout << "You need to initialize and save at least once before previewing";
     }
-
-    
 
 }
 
@@ -304,7 +313,7 @@ void ShowLog(){
     }
     else{
 
-        std::cout << "The log file doesn't seem to be where it's supposed to. Please try Initializing first.";
+        std::cout << "The log file doesn't seem to be where it's supposed to. Please try initializing first.";
 
     }
     
