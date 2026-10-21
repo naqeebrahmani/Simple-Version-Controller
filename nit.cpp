@@ -126,7 +126,8 @@ void UnCompressAndCopyDirectory(std::string srcPath, std::string destPath){
                     continue;
                 }
                 else if(uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) == Z_DATA_ERROR){
-                    std::cout << "Could not uncompress " << dirEntry.path().filename().string();
+                    std::cout << "Could not uncompress " << dirEntry.path().filename().string() << "\n"; 
+                    continue;
                 }
                 else if(uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) == Z_BUF_ERROR){
 
@@ -241,6 +242,12 @@ void AddAndCommit(){
     
 }
 
+void Replace(std::string srcPath){
+
+
+
+}
+
 
 
 void Preview(std::string saveNumber){
@@ -258,7 +265,7 @@ void Preview(std::string saveNumber){
 
         UnCompressAndCopyDirectory(srcPath, PreviewDirPath);
 
-        std::cout << "Preview directory status: successful\n";
+        std::cout << "The preview directory is ready.\n";
         std::cout << "Note: The preview directory can be deleted by you anytime, and using the preview command automatically clears the preview directory.\n";
 
 
@@ -343,7 +350,7 @@ int main(int totalArgs, char* args[]){
         else if(stringArgs[1] == "preview"){
 
             if(totalArgs < 3){
-                std::cout << "few arguments. You also need to specify which save you want to Preview by typing \"Preview savenumber\".";
+                std::cout << "few arguments. You also need to specify which save you want to Preview by typing \"preview x\" (x is the save number).";
                 return 0;
             }
             
