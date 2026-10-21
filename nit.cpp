@@ -242,9 +242,39 @@ void AddAndCommit(){
     
 }
 
-void Replace(std::string srcPath){
+void Replace(std::string saveNumber){
 
-    for(std::filesystem::directory_entry dirEntry : std::filesystem::directory_iterator(".")){
+    std::string srcPath = ".nit/saves/"+saveNumber;
+
+    if(std::filesystem::exists(srcPath)){
+
+        std::cout << "Replacing the current directory also implies deleting everything and replacing. Please make sure that you have saved first.";
+        std::cout << "Are you sure Y/n (The default answer is n)? ";
+        std::string userAns;
+        std::cin >> userAns;
+
+        bool userSure = (userAns=="Y") ? true : false;
+
+        if(userSure){
+
+            //deleting everything from current directory//
+            for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(".")){
+
+                if(dirEntry.path().filename().string() != ".nit"){
+                    std::filesystem::remove_all(dirEntry.path());
+                }
+
+            }
+
+            ///////////////////////////////////////////////
+
+        }
+
+
+    }
+    else{
+
+        std::cout << "You need to initialize and save at least once before replacing.";
 
     }
 
@@ -284,7 +314,7 @@ void Preview(std::string saveNumber){
 
     }
     else{
-        std::cout << "You need to initialize and save at least once before previewing";
+        std::cout << "You need to initialize and save at least once before previewing.";
     }
 
 }
@@ -356,10 +386,22 @@ int main(int totalArgs, char* args[]){
 
         }
 
+        else if(stringArgs[1] == "replace"){
+            
+            if(totalArgs < 3){
+                std::cout << "few arguments. You also need to specify which save you want to Preview by typing \"replace x\" (with x being the save number).";
+                return 0;
+            }
+            
+            Replace(stringArgs[2]);
+            
+            
+        }
+
         else if(stringArgs[1] == "preview"){
 
             if(totalArgs < 3){
-                std::cout << "few arguments. You also need to specify which save you want to Preview by typing \"preview x\" (x is the save number).";
+                std::cout << "few arguments. You also need to specify which save you want to Preview by typing \"preview x\" (with x being the save number).";
                 return 0;
             }
             
