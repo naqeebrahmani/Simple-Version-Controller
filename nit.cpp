@@ -27,12 +27,12 @@ void Init(){
         std::ofstream infoFile(".nit/log");
 
         //time_t timeNow = time(nullptr); //time in seconds since 1st jan 1970
-        //i didnt use ctime because autocorrect was showing it as deprecated
+        //i didnt use ctime because it was showing up as deprecated
         // After some research,I found out that chrono is the newer (c++ 20+ if i remember correct) thing for time related stuff
 
 
         std::chrono::zoned_time timeZone{"CET", std::chrono::system_clock::now()};
-        std::string timeString = std::format("{:%Y-%m-%d %H:%M}", timeZone);
+        std::string timeString = std::format("{:%F %R:%OS}", timeZone);
 
         infoFile << "0\nRepository Initialized on " + timeString + "\n";
 
@@ -210,7 +210,7 @@ void AddAndCommit(){
 
 
         std::chrono::zoned_time timeZone{"CET", std::chrono::system_clock::now()};
-        std::string commitTime = std::format("{:%y-%m-%d %H:%M}", timeZone) + "\n";
+        std::string commitTime = std::format("{:%F %R:%OS}", timeZone) + "\n";
 
         std::string commitMessageWithTimeAndCommitNumber = "(" + std::to_string(totalCommits + 1) + ")" + commitTime + commitMessage + "\n";
 
