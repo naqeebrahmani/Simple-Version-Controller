@@ -13,7 +13,7 @@ extern "C"{
 }
 
 
-std::string commands[] = {"init", "add", "replace x (x is the save number)", "preview x (x is the save number)", "log", "help"};
+std::string commands[] = {"init", "save", "replace x (x is the save number)", "preview x (x is the save number)", "log", "help"};
 
 
 
@@ -170,7 +170,7 @@ void UnCompressAndCopyDirectory(std::string srcPath, std::string destPath){
 
 
 
-void AddAndCommit(){
+void Save(){
     if(std::filesystem::exists(".nit/log")){
         std::cout << "description (for whole directory): ";
         std::string commitMessage;
@@ -204,9 +204,6 @@ void AddAndCommit(){
         CompressAndCopyDirectory(".", ".nit/saves/"+std::to_string(totalCommits+1));
 
         /////////////////////////
-        
-
-
 
 
         std::chrono::zoned_time timeZone{"CET", std::chrono::system_clock::now()};
@@ -380,9 +377,9 @@ int main(int totalArgs, char* args[]){
 
         }
 
-        else if(stringArgs[1] == "add"){
+        else if(stringArgs[1] == "save"){
 
-            AddAndCommit();
+            Save();
 
         }
 
@@ -422,13 +419,13 @@ int main(int totalArgs, char* args[]){
         }
 
         else{
-            std::cout << "Invalid Command. Type \"nit Help\" to see all available commands.";
+            std::cout << "Invalid Command. Type \"nit help\" to see all available commands.";
         }
 
 
     }
     else{
-        std::cout << "Not enough argumnets. Type \"nit Help\" to see all available commands.";
+        std::cout << "Not enough argumnets. Type \"nit help\" to see all available commands.";
     }
 
     
