@@ -245,12 +245,12 @@ void Replace(std::string saveNumber){
 
     if(std::filesystem::exists(srcPath)){
 
-        std::cout << "Replacing the current directory also implies deleting everything and replacing. Please make sure that you have saved first.";
-        std::cout << "Are you sure Y/n (The default answer is n)? ";
+        std::cout << "Replacing the current directory implies deleting everything and replacing afterwards. Please make sure that you have saved first.\n";
+        std::cout << "Are you sure Y/n? ";
         std::string userAns;
         std::cin >> userAns;
 
-        bool userSure = (userAns=="Y") ? true : false;
+        bool userSure = (userAns=="Y");
 
         if(userSure){
 
@@ -265,13 +265,20 @@ void Replace(std::string saveNumber){
 
             ///////////////////////////////////////////////
 
+            UnCompressAndCopyDirectory(srcPath, ".");
+
+
+
+        }
+        else{
+            exit(0);
         }
 
 
     }
     else{
 
-        std::cout << "You need to initialize and save at least once before replacing.";
+        std::cout << "Could not find a save with this number.";
 
     }
 
