@@ -1,8 +1,0 @@
-[
-{
-  "directory": "C:/Users/naqee/Desktop/Simple-Version-Controller/build",
-  "command": "C:\\raylib\\w64devkit\\bin\\c++.exe -IC:/zlib-1.3.2 -std=gnu++20 -o CMakeFiles\\nit.dir\\nit.cpp.obj -c C:\\Users\\naqee\\Desktop\\Simple-Version-Controller\\nit.cpp",
-  "file": "C:/Users/naqee/Desktop/Simple-Version-Controller/nit.cpp",
-  "output": "C:/Users/naqee/Desktop/Simple-Version-Controller/build/CMakeFiles/nit.dir/nit.cpp.obj"
-}
-]
