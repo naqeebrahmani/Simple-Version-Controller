@@ -37,6 +37,12 @@ void Init(){
         infoFile << "0\nRepository Initialized on " + timeString + "\n";
 
         infoFile.close();
+
+        std::cout << "Initialized a repository.\n";
+
+    }
+    else{
+        std::cout << "A repository has already been initialized.\n";
     }
 
 
