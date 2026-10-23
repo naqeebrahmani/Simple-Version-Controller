@@ -31,8 +31,8 @@ void Init(){
         // After some research,I found out that chrono is the newer (c++ 20+ if i remember correct) thing for time related stuff
 
 
-        std::chrono::zoned_time timeZone{"CET", std::chrono::system_clock::now()};
-        std::string timeString = std::format("{:%F %R:%OS}", timeZone);
+        std::chrono::zoned_time timeZone{std::chrono::current_zone(), std::chrono::system_clock::now()};
+        std::string timeString = std::format("{:%F %X %Z}", timeZone);
 
         infoFile << "0\nRepository Initialized on " + timeString + "\n";
 
@@ -206,8 +206,8 @@ void Save(){
         /////////////////////////
 
 
-        std::chrono::zoned_time timeZone{"CET", std::chrono::system_clock::now()};
-        std::string commitTime = std::format("{:%F %R:%OS}", timeZone) + "\n";
+        std::chrono::zoned_time timeZone{std::chrono::current_zone(), std::chrono::system_clock::now()};
+        std::string commitTime =std::format("{:%F %X %Z}", timeZone) + "\n";
 
         std::string commitMessageWithTimeAndCommitNumber = "(" + std::to_string(totalCommits + 1) + ")" + commitTime + commitMessage + "\n";
 
