@@ -61,56 +61,112 @@ void CopyArray(T *srcarray, T *destarray, int arraysize){
 
 }
 
+template<typename T1>
+bool InArray(T1 *srcarray, T1 target, int arraysize){
+    
+    for(int i = 0; i < arraysize; i++){
+
+        if(srcarray[i] == target){
+            return true;
+        }
+
+    }
+
+    return false;
+
+}
+
 
 void CompressAndCopyDirectory(std::string srcPath, std::string destPath){
 
-    //std::cout << "starting iterating\n"; //for debugging
+    int excludepathsnum = 0;
+    std::string* excludepaths = new std::string[excludepathsnum];
 
-    for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(srcPath)){
+    //reading the exclude.nit file if it is there//
 
+    if(std::filesystem::exists("exclude.nit")){
 
+        std::ifstream excludefile("exclude.nit");
+    
+        std::string tempexcludepath{};
 
-        if(dirEntry.is_directory() && dirEntry.path().filename().string() != ".nit"){ 
-            std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
-            CompressAndCopyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
-        }
-        else if(dirEntry.path().filename().string() != ".nit"){
+        while(std::getline(excludefile, tempexcludepath)){
 
-            std::ifstream srcFile(dirEntry.path(), std::ifstream::binary);
+            std::string* tempexcludepaths = new std::string[excludepathsnum];
 
-            int srcFileBytes = std::filesystem::file_size(dirEntry.path());
-            unsigned char* srcFileBuffer = new unsigned char[srcFileBytes];
+            CopyArray(excludepaths, tempexcludepaths, excludepathsnum);
 
-            srcFile.read(reinterpret_cast<char*>(srcFileBuffer), srcFileBytes);
-            srcFile.close();
+            delete[] excludepaths;
 
+            excludepathsnum++;
+            excludepaths = new std::string[excludepathsnum];
 
-            uLong destFileBytes = compressBound(srcFileBytes);
-            unsigned char* destFileBuffer = new unsigned char[destFileBytes];
-            
-            if(compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) < 0){
-                std::cout << "Error when trying to compress your files.\n";
-                exit(0);
-            }
+            CopyArray(tempexcludepaths, excludepaths, excludepathsnum - 1);
 
-            //compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes);
+            delete[] tempexcludepaths;
 
-            std::ofstream destFile(destPath + "/" + dirEntry.path().filename().string(), std::ofstream::binary);
-            destFile.write(reinterpret_cast<char*>(destFileBuffer), destFileBytes);
-
-
-            std::cout << "Compressed and saved: " << dirEntry.path().filename().string() << "\n";
-
-            delete[] srcFileBuffer;
-            delete[] destFileBuffer;
-
+            excludepaths[excludepathsnum - 1] = tempexcludepath;
 
         }
+
+
+
+        excludefile.close();
 
 
     }
 
-    //std::cout << "iterated!\n"; //for debugging
+    //////////////////////////////////////////////
+
+
+
+    for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(srcPath)){
+
+        if(!InArray(excludepaths, dirEntry.path().filename().string(), excludepathsnum)){
+
+            if(dirEntry.is_directory() && dirEntry.path().filename().string() != ".nit"){ 
+                std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
+                CompressAndCopyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
+            }
+            else if(dirEntry.path().filename().string() != ".nit"){
+
+                std::ifstream srcFile(dirEntry.path(), std::ifstream::binary);
+
+                int srcFileBytes = std::filesystem::file_size(dirEntry.path());
+                unsigned char* srcFileBuffer = new unsigned char[srcFileBytes];
+
+                srcFile.read(reinterpret_cast<char*>(srcFileBuffer), srcFileBytes);
+                srcFile.close();
+
+
+                uLong destFileBytes = compressBound(srcFileBytes);
+                unsigned char* destFileBuffer = new unsigned char[destFileBytes];
+                
+                if(compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) < 0){
+                    std::cout << "Error when trying to compress your files.\n";
+                    exit(0);
+                }
+
+                //compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes);
+
+                std::ofstream destFile(destPath + "/" + dirEntry.path().filename().string(), std::ofstream::binary);
+                destFile.write(reinterpret_cast<char*>(destFileBuffer), destFileBytes);
+
+
+                std::cout << "Compressed and saved: " << dirEntry.path().filename().string() << "\n";
+
+                delete[] srcFileBuffer;
+                delete[] destFileBuffer;
+
+
+            }
+
+
+        }
+
+
+
+    }
 
 }
 
