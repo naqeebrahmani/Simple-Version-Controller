@@ -168,6 +168,8 @@ void CompressAndCopyDirectory(std::string srcPath, std::string destPath){
 
     }
 
+    delete[] excludepaths;
+
 }
 
 
