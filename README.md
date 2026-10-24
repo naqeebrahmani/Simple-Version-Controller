@@ -1,6 +1,8 @@
 # **nit**
 nit is an easy to use command line version controller made using C++ and the zlib library.
 
+## Features
+
 ## Installation Guide
 So far, the application is Windows only, mostly because it is my main operating system and because i barely have any experience with other operating systems i.e. Linux.
 ### Installing and Set up
