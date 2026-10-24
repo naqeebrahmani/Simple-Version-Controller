@@ -318,11 +318,50 @@ void Save(){
 
 void Replace(std::string saveNumber){
 
+    int excludepathsnum = 0;
+    std::string* excludepaths = new std::string[excludepathsnum];
+
+    //reading the exclude.nit file if it is there//
+
+    if(std::filesystem::exists("exclude.nit")){
+
+        std::ifstream excludefile("exclude.nit");
+    
+        std::string tempexcludepath{};
+
+        while(std::getline(excludefile, tempexcludepath)){
+
+            std::string* tempexcludepaths = new std::string[excludepathsnum];
+
+            CopyArray(excludepaths, tempexcludepaths, excludepathsnum);
+
+            delete[] excludepaths;
+
+            excludepathsnum++;
+            excludepaths = new std::string[excludepathsnum];
+
+            CopyArray(tempexcludepaths, excludepaths, excludepathsnum - 1);
+
+            delete[] tempexcludepaths;
+
+            excludepaths[excludepathsnum - 1] = tempexcludepath;
+
+        }
+
+
+
+        excludefile.close();
+
+
+    }
+
+    //////////////////////////////////////////////
+
     std::string srcPath = ".nit/saves/"+saveNumber;
 
     if(std::filesystem::exists(srcPath)){
 
-        std::cout << "Replacing the current directory implies deleting everything and replacing afterwards. Please make sure that you have saved first.\n";
+        std::cout << "Replacing the current directory implies deleting everything (except the files/directories that are in the exclude.nit file) and replacing afterwards. Please make sure that you have saved first.\n";
         std::cout << "Are you sure Y/n? ";
         std::string userAns;
         std::cin >> userAns;
@@ -331,10 +370,10 @@ void Replace(std::string saveNumber){
 
         if(userSure){
 
-            //deleting everything from current directory//
+            //deleting everything from the current directory besides the files/directories specified in the exclude.nit file//
             for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(".")){
 
-                if(dirEntry.path().filename().string() != ".nit"){
+                if(dirEntry.path().filename().string() != ".nit" && !InArray(excludepaths, dirEntry.path().filename().string(), excludepathsnum)){
                     std::filesystem::remove_all(dirEntry.path());
                 }
 
@@ -358,6 +397,8 @@ void Replace(std::string saveNumber){
         std::cout << "Could not find a save with this number.";
 
     }
+
+    delete[] excludepaths;
 
 
 }
