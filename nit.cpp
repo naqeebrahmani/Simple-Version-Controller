@@ -128,7 +128,7 @@ void CompressAndCopyDirectory(std::string srcPath, std::string destPath){
                 std::filesystem::create_directory(destPath+"/"+dirEntry.path().filename().string());
                 CompressAndCopyDirectory(srcPath + "/" + dirEntry.path().filename().string(), destPath + "/" + dirEntry.path().filename().string());
             }
-            else if(dirEntry.path().filename().string() != ".nit"){
+            else if(dirEntry.path().filename().string() != ".nit" && dirEntry.path().filename().string() != "exclude.nit"){
 
                 std::ifstream srcFile(dirEntry.path(), std::ifstream::binary);
 
@@ -373,8 +373,12 @@ void Replace(std::string saveNumber){
             //deleting everything from the current directory besides the files/directories specified in the exclude.nit file//
             for(std::filesystem::directory_entry const &dirEntry : std::filesystem::directory_iterator(".")){
 
-                if(dirEntry.path().filename().string() != ".nit" && !InArray(excludepaths, dirEntry.path().filename().string(), excludepathsnum)){
+                if(dirEntry.path().filename().string() != ".nit"
+                 && !InArray(excludepaths, dirEntry.path().filename().string(), excludepathsnum)
+                 && dirEntry.path().filename().string() != "exclude.nit"){
+
                     std::filesystem::remove_all(dirEntry.path());
+
                 }
 
             }
