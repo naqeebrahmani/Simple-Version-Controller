@@ -49,6 +49,19 @@ void Init(){
 }
 
 
+template<typename T>
+void CopyArray(T *srcarray, T *destarray, int arraysize){
+
+    for(int i = 0; i < arraysize; i++){
+
+        destarray[i] = srcarray[i];
+
+    }
+
+
+}
+
+
 void CompressAndCopyDirectory(std::string srcPath, std::string destPath){
 
     //std::cout << "starting iterating\n"; //for debugging
