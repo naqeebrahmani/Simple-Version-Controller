@@ -147,7 +147,6 @@ void CompressAndCopyDirectory(std::string srcPath, std::string destPath){
                     exit(0);
                 }
 
-                //compress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes);
 
                 std::ofstream destFile(destPath + "/" + dirEntry.path().filename().string(), std::ofstream::binary);
                 destFile.write(reinterpret_cast<char*>(destFileBuffer), destFileBytes);
@@ -193,7 +192,7 @@ void UnCompressAndCopyDirectory(std::string srcPath, std::string destPath){
             srcFile.close();
 
 
-            uLong destFileBytes = srcFileBytes * 1.5;
+            uLong destFileBytes = srcFileBytes * 100;
             unsigned char* destFileBuffer = new unsigned char[destFileBytes];
             
             if(uncompress(destFileBuffer, &destFileBytes, srcFileBuffer, srcFileBytes) < 0){
