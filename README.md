@@ -19,15 +19,15 @@ nit is an easy to use command line version controller made using C++ and the zli
      - Recommended to save before replacing.
        
 - **nit preview x (x = save number)**
-      - Creates a preview directory inside the .nit directory where the specified save will be uncompressed and made available for preview.
-      - Usually recommended before replacing.
+     - Creates a preview directory inside the .nit directory where the specified save will be uncompressed and made available for preview.
+     - Usually recommended before replacing.
 
 - **nit log**
-      - Displays the contents of the log file in the command prompt.
-      - Shows each save's date, time and save description.
+     - Displays the contents of the log file in the command prompt.
+     - Shows each save's date, time and save description.
 
 - **nit help**
-      - Displays all available commands in the command prompt.
+     - Displays all available commands in the command prompt.
 
 ## Installation Guide
 So far, the application is Windows only, mostly because it is my main operating system and because i barely have any experience with other operating systems i.e. Linux.
